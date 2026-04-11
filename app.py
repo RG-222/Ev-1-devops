@@ -2,4 +2,4 @@ def suma(a, b):
     return a + b
 
 if __name__ == "__main__":
-    print(f"Resultado de la suma: {suma(5, 5)}")
+    print(f"Resultado de la suma: {suma(10, 10)}")

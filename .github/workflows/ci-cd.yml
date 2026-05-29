@@ -53,6 +53,6 @@ jobs:
     # 7. Simular Despliegue con Docker Compose (IE4)
     - name: Despliegue Simulado en Producción
       run: |
-        docker-compose up -d
+        docker compose up -d
         echo "Microservicio desplegado exitosamente en el entorno simulado."
         docker ps

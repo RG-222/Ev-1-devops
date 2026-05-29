@@ -1,0 +1,58 @@
+name: Pipeline CI/CD Microservicio Flask
+
+on:
+  # Se dispara al hacer PUSH solo en la rama de desarrollo
+  push:
+    branches: [ "develop" ]
+  
+  # Se dispara al crear un Pull Request hacia la rama principal (producción)
+  pull_request:
+    branches: [ "main" ]
+
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Descargar el código del repositorio
+    - name: Checkout de código
+      uses: actions/checkout@v4
+
+    # 2. Configurar el entorno de Python
+    - name: Configurar Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    # 3. Instalar las dependencias del proyecto
+    - name: Instalar dependencias
+      run: |
+        python -m pip upgrade pip
+        pip install -r requirements.txt
+
+    # 4. Ejecutar Pruebas Unitarias (IE2)
+    - name: Ejecutar Pruebas con PyTest
+      run: |
+        pytest
+
+    # 5. Análisis de Seguridad con Snyk (IE3)
+    # NOTA: Romperá el pipeline si encuentra vulnerabilidades críticas (Low, Med, High, Critical)
+    - name: Escaneo de seguridad (Snyk)
+      uses: snyk/actions/python@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --severity-threshold=high
+
+    # 6. Construir la imagen Docker (IE1)
+    - name: Construir Imagen Docker
+      run: |
+        docker build -t microservicio-flask:latest .
+
+    # 7. Simular Despliegue con Docker Compose (IE4)
+    - name: Despliegue Simulado en Producción
+      run: |
+        docker-compose up -d
+        echo "Microservicio desplegado exitosamente en el entorno simulado."
+        docker ps

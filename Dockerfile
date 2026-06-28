@@ -1,18 +1,32 @@
-# 1. Imagen base oficial de Python
-FROM python:3.10-slim
+# Capa de compilación y dependencias (Multi-stage simulado para optimizar)
+FROM python:3.10-slim AS builder
 
-# 2. Directorio de trabajo
 WORKDIR /app
 
-# 3. Copiar las dependencias e instalarlas
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 4. Copiar todo el código del proyecto
-COPY . .
+# Capa final de producción
+FROM python:3.10-slim
 
-# 5. Exponer el puerto de Flask
+WORKDIR /app
+
+# Copiar dependencias instaladas desde la capa anterior
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Copiar código de la app
+COPY app.py .
+COPY test_app.py .
+
+# Seguridad: Crear usuario no-root para no correr con privilegios de administrador
+RUN useradd -m devopsuser && chown -R devopsuser:devopsuser /app
+USER devopsuser
+
+# Exponer puerto del microservicio
 EXPOSE 5000
 
-# 6. Comando de arranque
+# Ejecutar aplicación
 CMD ["python", "app.py"]

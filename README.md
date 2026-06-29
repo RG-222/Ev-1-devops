@@ -35,7 +35,17 @@ El pipeline CI/CD genera dinámicamente un reporte de métricas clave (Dashboard
 
 ---
 
-## 🤖 4. Declaración de Uso de IA Institucional
+## 🔑 4. Enlaces, Credenciales y Accesos para Revisión
+
+Para facilitar la evaluación del entorno orquestado y la gobernanza del código, se declaran los siguientes accesos:
+* **Rama de Trabajo Principal:** El desarrollo y la entrega técnica oficial se encuentran en la rama `develop`, manteniendo un Pull Request abierto hacia `main` protegido por políticas de fusión (*Branch Protection*).
+* **Acceso y Visibilidad:** Al tratarse de un repositorio de carácter **público**, el evaluador tiene acceso irrestricto de lectura para auditar el código fuente, el estado del Pull Request, los logs de ejecución y los flujos de trabajo de CI/CD de forma directa.
+* **Entorno de Monitoreo (Prometheus):** En este stack simulado localmente (Opción A), el servidor de Prometheus se despliega de forma interna expuesto en el puerto `:9090` sin autenticación previa por defecto para facilitar las pruebas de desarrollo seguro.
+* **Dashboard como Artefacto:** El reporte de métricas y cobertura se genera automáticamente tras la ejecución exitosa del pipeline y queda guardado como el artefacto descargable `dashboard_report.md` en la pestaña **Actions** de GitHub.
+
+---
+
+## 🤖 5. Declaración de Uso de IA Institucional
 
 * Herramienta Utilizada: Gemini AI.
 * Ámbito de Aplicación: Apoyo en la optimización de sintaxis para flujos de trabajo de GitHub Actions, refactorización del Healthcheck nativo de Python para Docker Compose, y estructuración técnica del presente reporte. Toda la validación, ejecución del pipeline en verde y pruebas en el repositorio fueron controladas por el alumno.

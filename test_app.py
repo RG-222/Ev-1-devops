@@ -10,7 +10,7 @@ def test_home_endpoint(client):
     """Valida que la ruta raíz responda exitosamente"""
     response = client.get('/')
     assert response.status_code == 200
-    assert b"Microservicio de Evaluacion Parcial 3" in response.data
+    assert b"operando de forma segura" in response.data  # Buscamos esta frase sin acentos
 
 def test_health_endpoint(client):
     """Valida el endpoint de salud del sistema"""

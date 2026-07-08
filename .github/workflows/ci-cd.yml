@@ -35,7 +35,7 @@ jobs:
         pytest --cov=app test_app.py --cov-report=term-missing
 
     - name: SonarCloud Scan (Análisis SAST Avanzado)
-      uses: SonarSource/sonarcloud-github-action@master
+      uses: SonarSource/sonarqube-scan-action@v5.0.0 # Versión actualizada
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

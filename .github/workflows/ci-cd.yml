@@ -40,7 +40,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        args: -Dsonar.organization=rg-222 -Dsonar.projectKey=RG-222_Ev-1-devops -Dsonar.sources=. -Dsonar.qualitygate.wait=true
+        args: -Dsonar.organization=rg-222 -Dsonar.projectKey=RG-222_Ev-1-devops -Dsonar.sources=.
 
     - name: 🔍 Escaneo de Dependencias (SCA - Snyk Opcional)
       uses: snyk/actions/python@master

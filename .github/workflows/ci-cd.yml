@@ -16,7 +16,7 @@ jobs:
     - name: Configurar Python 3.10
       uses: actions/setup-python@v5
       with:
-        python-python-version: "3.10"
+        python-version: "3.10"
 
     - name: Instalar Dependencias
       run: |
@@ -33,6 +33,18 @@ jobs:
       run: |
         echo "Ejecutando suite de pruebas unitarias sobre endpoints Flask..."
         pytest --cov=app test_app.py --cov-report=term-missing
+
+    - name: SonarCloud Scan (Análisis SAST Avanzado)
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        args: >
+          -Dsonar.organization=rg-222
+          -Dsonar.projectKey=RG-222_Ev-1-devops
+          -Dsonar.sources=.
+          -Dsonar.qualitygate.wait=true
 
     - name: 🔍 Escaneo de Dependencias (SCA - Snyk Opcional)
       uses: snyk/actions/python@master

@@ -1,0 +1,6 @@
+version: 2
+updates:
+  - package-ecosystem: "pip" # Para buscar actualizaciones de Flask/Pytest
+    directory: "/"
+    schedule:
+      interval: "weekly"

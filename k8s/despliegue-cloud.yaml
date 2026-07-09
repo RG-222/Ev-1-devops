@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-microservicio
+  namespace: produccion
+  labels:
+    app: app-microservicio
+spec:
+  replicas: 3 # Parámetro de Escalabilidad (IE8)
+  selector:
+    matchLabels:
+      app: app-microservicio
+  template:
+    metadata:
+      labels:
+        app: app-microservicio
+      annotations:
+        # Integración de Monitoreo con AWS CloudWatch (IE11/IE12)
+        cloudwatch.amazonaws.com/scrape: "true"
+        cloudwatch.amazonaws.com/port: "8000"
+    spec:
+      containers:
+      - name: microservicio
+        image: rg222/ev-1-devops:latest # Tu imagen de Docker Hub
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-microservicio-service
+  namespace: produccion
+spec:
+  ports:
+  - port: 8000
+    name: http
+  selector:
+    app: app-microservicio
+---
+# Orquestación y Malla de Servicios con Istio (IE10 / IE12)
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: app-gateway
+  namespace: produccion
+spec:
+  selector:
+    istio: ingressgateway # Usa el controlador por defecto de Istio
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app-virtualservice
+  namespace: produccion
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - app-gateway
+  http:
+  - route:
+    - destination:
+        host: app-microservicio-service
+        port:
+          number: 8000

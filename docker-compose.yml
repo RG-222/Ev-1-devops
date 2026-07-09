@@ -1,0 +1,42 @@
+services:
+  web_app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask_microservice_prod
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - RESTART_COUNT=1
+    networks:
+      - devops_network
+    restart: always
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus_monitoring
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - devops_network
+    depends_on:
+      web_app:
+        condition: service_healthy # Espera a que el healthcheck de Flask esté UP
+    restart: always
+
+networks:
+  devops_network:
+    driver: bridge
+
+volumes:
+  prometheus_data:

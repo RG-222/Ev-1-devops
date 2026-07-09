@@ -48,6 +48,21 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+    - name: 🔐 Iniciar sesión en Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: 🐳 Construir y Publicar Imagen en Docker Hub
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/ev1-devops:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/ev1-devops:${{ github.sha }}
+          
   orquestacion_y_monitoreo:
     needs: calidad_y_seguridad
     runs-on: ubuntu-latest
